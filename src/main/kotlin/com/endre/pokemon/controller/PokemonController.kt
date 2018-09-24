@@ -50,12 +50,6 @@ class ArticleController {
         return pokemonService.createPokemon(pokemonDto)
     }
 
-    @ApiOperation("Batch create new Pokemon's")
-    @PostMapping(path = ["/batch"])
-    fun batchPost(@RequestBody pokemonDtos: List<PokemonDto>): ResponseEntity<Void> {
-        return pokemonService.batchCreatePokemon(pokemonDtos)
-    }
-
     @ApiOperation("Get single pokemon by the Pokedex number")
     @GetMapping(path = ["/{id}"])
     fun get(@ApiParam("The pokedex number of the pokemon")
