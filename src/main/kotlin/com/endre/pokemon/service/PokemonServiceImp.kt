@@ -29,7 +29,7 @@ class PokemonServiceImp : PokemonService {
     override fun createPokemon(pokemonDto : PokemonDto) : ResponseEntity<Long> {
         if (pokemonDto.id == null || pokemonDto.name == null ||
                 pokemonDto.candy_count == null || pokemonDto.egg == null ||
-                pokemonDto.img == null)
+                pokemonDto.img == null || pokemonDto.type == null || pokemonDto.weaknesses == null)
             return ResponseEntity(HttpStatus.BAD_REQUEST)
 
         val id: Long?

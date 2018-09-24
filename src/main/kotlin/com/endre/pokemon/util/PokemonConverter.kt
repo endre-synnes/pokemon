@@ -19,7 +19,9 @@ class PokemonConverter {
 
             val id = pokemonDto.id!!.toLong()
 
-            return Pokemon(pokemonDto.name!!, pokemonDto.img!!, pokemonDto.candy_count, pokemonDto.egg!!, id)
+            return Pokemon(pokemonDto.name!!, pokemonDto.img!!, pokemonDto.candy_count,
+                    pokemonDto.egg!!, pokemonDto.type, pokemonDto.weaknesses,
+                    pokemonDto.prevEvolution, pokemonDto.nextEvolution, id)
         }
 
 
@@ -34,7 +36,11 @@ class PokemonConverter {
                     pokemon.name,
                     pokemon.img,
                     pokemon.candyCount,
-                    pokemon.egg)
+                    pokemon.egg,
+                    pokemon.type,
+                    pokemon.weaknesses,
+                    pokemon.prevEvolution,
+                    pokemon.nextEvolution)
         }
 
         fun convertToDto(pokemon: Iterable<Pokemon>): List<PokemonDto> {

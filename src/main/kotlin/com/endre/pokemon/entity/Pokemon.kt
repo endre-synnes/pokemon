@@ -1,6 +1,7 @@
 package com.endre.pokemon.entity
 
 
+import javax.persistence.ElementCollection
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.validation.constraints.NotBlank
@@ -22,11 +23,24 @@ class Pokemon(
         @get:NotBlank @get:Size(max = 2048)
         var img: String? = null,
 
-
         var candyCount: Int? = null,
 
         @get:NotNull
         var egg: String,
+
+        @get:ElementCollection
+        @get:NotNull
+        var type: Set<String>? = setOf(),
+
+        @get:ElementCollection
+        @get:NotNull
+        var weaknesses: Set<String>? = setOf(),
+
+        @get:ElementCollection
+        var prevEvolution: Set<Long>? = setOf(),
+
+        @get:ElementCollection
+        var nextEvolution: Set<Long>? = setOf(),
 
         @get:Id @get:NotNull
         var id: Long
