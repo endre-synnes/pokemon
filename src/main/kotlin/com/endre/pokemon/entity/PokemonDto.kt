@@ -12,6 +12,9 @@ data class PokemonDto(
         @ApiModelProperty("The id of the Pokemon")
         var id: String? = null,
 
+        @ApiModelProperty("The number of the Pokemon")
+        var num: String? = null,
+
         @ApiModelProperty("The name of the Pokemon")
         var name: String? = null,
 
@@ -24,7 +27,6 @@ data class PokemonDto(
         @ApiModelProperty("Distance needed to walk to earn one candy")
         var egg: String? = null,
 
-        //TODO fix types for transfer object
         var type: Set<String>? = null,
 
         var weaknesses: Set<String>? = null,

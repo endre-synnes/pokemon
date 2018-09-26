@@ -3,11 +3,11 @@ package com.endre.pokemon.entity
 
 import javax.persistence.ElementCollection
 import javax.persistence.Entity
+import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
-import kotlin.math.max
 
 /**
  * Created by Endre on 02.09.2018.
@@ -16,6 +16,9 @@ import kotlin.math.max
  */
 @Entity
 class Pokemon(
+
+        @get:NotBlank @get:Size(max = 5)
+        var num: String? = null,
 
         @get:NotBlank @get:Size(max = 128)
         var name: String,
@@ -42,8 +45,8 @@ class Pokemon(
         @get:ElementCollection
         var nextEvolution: Set<String>? = setOf(),
 
-        @get:Id @get:NotNull
-        var id: Long
+        @get:Id @get:GeneratedValue
+        var id: Long? = null
 
         /*
             Note how we need to explicitly state that id can be null (eg when entity

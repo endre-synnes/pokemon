@@ -1,8 +1,10 @@
 package com.endre.pokemon.service
 
 import com.endre.pokemon.entity.PokemonDto
+import com.endre.pokemon.entity.SimplePokemonDto
 import com.endre.pokemon.repository.PokemonRepository
 import com.endre.pokemon.util.PokemonConverter.Companion.convertFromDto
+import com.endre.pokemon.util.PokemonConverter.Companion.convertFromSimplePokemonDto
 import com.endre.pokemon.util.PokemonConverter.Companion.convertToDto
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import javax.validation.ConstraintViolationException
+import com.fasterxml.jackson.module.kotlin.*
 
 /**
  * Created by Endre on 02.09.2018.
@@ -27,7 +30,7 @@ class PokemonServiceImp : PokemonService {
 
 
     override fun createPokemon(pokemonDto : PokemonDto) : ResponseEntity<Long> {
-        if (pokemonDto.id == null || pokemonDto.name == null ||
+        if (pokemonDto.num == null || pokemonDto.name == null ||
                 pokemonDto.candy_count == null || pokemonDto.egg == null ||
                 pokemonDto.img == null || pokemonDto.type == null || pokemonDto.weaknesses == null)
             return ResponseEntity(HttpStatus.BAD_REQUEST)
@@ -51,12 +54,15 @@ class PokemonServiceImp : PokemonService {
         return ResponseEntity.ok().build()
     }
 
-    override fun findBy(name: String?): ResponseEntity<List<PokemonDto>> {
-
-        val list = if (!name.isNullOrBlank()) {
+    override fun findBy(name: String?, num: String?): ResponseEntity<List<PokemonDto>> {
+        val list = if (name.isNullOrBlank() && num.isNullOrBlank()) {
+            pokemonRepository.findAll()
+        }else if(!name.isNullOrBlank() && !num.isNullOrBlank()) {
+            return ResponseEntity.status(400).build()
+        } else if (!name.isNullOrBlank()){
             pokemonRepository.findAllByName(name!!)
         } else {
-            pokemonRepository.findAll()
+            pokemonRepository.findByNum(num!!)
         }
 
         return ResponseEntity(convertToDto(list), HttpStatus.OK)
@@ -89,17 +95,23 @@ class PokemonServiceImp : PokemonService {
             return ResponseEntity.status(404).build()
         }
 
-        if (dto.id == null || dto.img == null || dto.egg == null
-                || dto.candy_count == null || dto.name == null) {
+        if (dto.num == null || dto.img == null || dto.egg == null
+                || dto.candy_count == null || dto.name == null
+                || dto.type == null || dto.weaknesses == null) {
             return ResponseEntity.status(400).build()
         }
 
         var pokemon = pokemonRepository.findById(id).get()
 
+        pokemon.num = dto.num!!
         pokemon.candyCount = dto.candy_count!!
         pokemon.egg = dto.egg!!
         pokemon.img = dto.img!!
         pokemon.name = dto.name!!
+        pokemon.weaknesses = dto.weaknesses!!
+        pokemon.type = dto.type!!
+        pokemon.prevEvolution = convertFromSimplePokemonDto(dto.prev_evolution)
+        pokemon.nextEvolution = convertFromSimplePokemonDto(dto.next_evolution)
 
         pokemonRepository.save(pokemon).id
 
@@ -137,6 +149,15 @@ class PokemonServiceImp : PokemonService {
 
         var pokemon = pokemonRepository.findById(id).get()
 
+        if (jsonNode.has("num")){
+            val num = jsonNode.get("num")
+            if (num.isTextual){
+                pokemon.num = num.asText()
+            } else {
+                return ResponseEntity.status(400).build()
+            }
+        }
+
         if (jsonNode.has("name")){
             val name = jsonNode.get("name")
             if (name.isTextual){
@@ -168,6 +189,58 @@ class PokemonServiceImp : PokemonService {
             val egg = jsonNode.get("egg")
             if (egg.isTextual){
                 pokemon.egg = egg.asText()
+            } else {
+                return ResponseEntity.status(400).build()
+            }
+        }
+
+        if (jsonNode.has("type")){
+            val type = jsonNode.get("type")
+            if (type.isNull){
+                pokemon.type = null
+            } else if (type.isArray){
+                pokemon.type = type.toSet().map { it.asText() }.toSet()
+            } else {
+                return ResponseEntity.status(400).build()
+            }
+        }
+
+        if (jsonNode.has("weaknesses")){
+            val weaknesses = jsonNode.get("weaknesses")
+            if (weaknesses.isNull){
+                pokemon.weaknesses = null
+            } else if (weaknesses.isArray){
+                pokemon.weaknesses = weaknesses.toSet().map { it.asText() }.toSet()
+            } else {
+                return ResponseEntity.status(400).build()
+            }
+        }
+
+        if (jsonNode.has("prev_evolution")){
+            val prevEvolution = jsonNode.get("prev_evolution")
+            if (prevEvolution.isNull){
+                pokemon.prevEvolution = null
+
+            } else if (prevEvolution.isArray){
+                val mapper = jacksonObjectMapper()
+                val tmp: Set<SimplePokemonDto> = mapper.readValue(prevEvolution.toString())
+                pokemon.prevEvolution = convertFromSimplePokemonDto(tmp)
+
+            } else {
+                return ResponseEntity.status(400).build()
+            }
+        }
+
+        if (jsonNode.has("next_evolution")){
+            val nextEvolution = jsonNode.get("next_evolution")
+            if (nextEvolution.isNull){
+                pokemon.nextEvolution = null
+
+            } else if (nextEvolution.isArray){
+                val mapper = jacksonObjectMapper()
+                val tmp: Set<SimplePokemonDto> = mapper.readValue(nextEvolution.toString())
+                pokemon.nextEvolution = convertFromSimplePokemonDto(tmp)
+
             } else {
                 return ResponseEntity.status(400).build()
             }

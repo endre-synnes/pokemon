@@ -14,17 +14,10 @@ class PokemonConverter {
     companion object {
 
         fun convertFromDto(pokemonDto: PokemonDto) : Pokemon {
-            if (pokemonDto.id.isNullOrBlank()){
-                throw IllegalStateException("Missing id from DTO")
-            }
-
-            val id = pokemonDto.id!!.toLong()
-
-            return Pokemon(pokemonDto.name!!, pokemonDto.img!!, pokemonDto.candy_count,
+            return Pokemon(pokemonDto.num!!,pokemonDto.name!!, pokemonDto.img!!, pokemonDto.candy_count,
                     pokemonDto.egg!!, pokemonDto.type, pokemonDto.weaknesses,
                     convertFromSimplePokemonDto(pokemonDto.prev_evolution),
-                    convertFromSimplePokemonDto(pokemonDto.next_evolution),
-                    id
+                    convertFromSimplePokemonDto(pokemonDto.next_evolution)
             )
         }
 
@@ -37,6 +30,7 @@ class PokemonConverter {
         fun convertToDto(pokemon: Pokemon): PokemonDto {
             return PokemonDto(
                     pokemon.id.toString(),
+                    pokemon.num,
                     pokemon.name,
                     pokemon.img,
                     pokemon.candyCount,
@@ -52,20 +46,20 @@ class PokemonConverter {
             return pokemon.map { convertToDto(it) }
         }
 
-        private fun convertToSimplePokemonDto(pokemonNums: Set<String>?) : Set<SimplePokemonDto>?{
+        fun convertToSimplePokemonDto(pokemonNums: Set<String>?) : Set<SimplePokemonDto>?{
             return if (pokemonNums != null) {
                 if (pokemonNums.isNotEmpty()) {
-                    pokemonNums.asSequence().map { SimplePokemonDto(it, null) }.toSet()
+                    pokemonNums.asSequence().map { SimplePokemonDto(it, null) }.toHashSet()
                 } else null
             }else {
                 null
             }
         }
 
-        private fun convertFromSimplePokemonDto(simpleDtos: Set<SimplePokemonDto>?): Set<String>? {
+        fun convertFromSimplePokemonDto(simpleDtos: Set<SimplePokemonDto>?): Set<String>? {
             return if (simpleDtos != null) {
                 if (simpleDtos.isNotEmpty()) {
-                    simpleDtos.asSequence().map { it.num!! }.toSet()
+                    simpleDtos.asSequence().map { it.num!! }.toHashSet()
                 } else null
             } else {
                 null

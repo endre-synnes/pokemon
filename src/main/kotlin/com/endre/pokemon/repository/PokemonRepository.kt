@@ -12,5 +12,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface PokemonRepository : CrudRepository<Pokemon, Long> {
 
-    fun findAllByName(country: String): Iterable<Pokemon>
+    fun findAllByName(name: String): Iterable<Pokemon>
+
+    fun findByNum(num: String): Iterable<Pokemon>
 }

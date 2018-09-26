@@ -25,7 +25,7 @@ const val BASE_JSON = "application/json;charset=UTF-8"
         produces = [BASE_JSON]
 )
 @RestController
-class ArticleController {
+class PokemonController {
 
 
     @Value("\${server.servlet.context-path}")
@@ -38,9 +38,14 @@ class ArticleController {
     @ApiOperation("Get all pokemon's")
     @GetMapping
     fun getAll(@ApiParam("Name of the Pokemon")
-            @RequestParam("name", required = false)
-            name : String?): ResponseEntity<List<PokemonDto>> {
-        return pokemonService.findBy(name)
+               @RequestParam("name", required = false)
+               name : String?,
+
+               @ApiParam("Pokedex number of the Pokemon")
+               @RequestParam("num", required = false)
+               num: String?
+    ): ResponseEntity<List<PokemonDto>> {
+        return pokemonService.findBy(name, num)
     }
 
 
@@ -62,11 +67,11 @@ class ArticleController {
     @PutMapping(path = ["/{id}"])
     fun update(@ApiParam("The pokedex number of the pokemon")
                @PathVariable("id")
-               num: String?,
+               id: String?,
                @ApiParam("Pokemon data")
                @RequestBody
                pokemonDto: PokemonDto): ResponseEntity<Void> {
-        return pokemonService.update(num, pokemonDto)
+        return pokemonService.update(id, pokemonDto)
     }
 
     @ApiOperation("Update part of the pokemon's data")
