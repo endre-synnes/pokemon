@@ -37,10 +37,10 @@ class Pokemon(
         var weaknesses: Set<String>? = setOf(),
 
         @get:ElementCollection
-        var prevEvolution: Set<Long>? = setOf(),
+        var prevEvolution: Set<String>? = setOf(),
 
         @get:ElementCollection
-        var nextEvolution: Set<Long>? = setOf(),
+        var nextEvolution: Set<String>? = setOf(),
 
         @get:Id @get:NotNull
         var id: Long

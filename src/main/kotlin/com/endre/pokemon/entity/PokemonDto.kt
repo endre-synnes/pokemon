@@ -29,7 +29,7 @@ data class PokemonDto(
 
         var weaknesses: Set<String>? = null,
 
-        var prevEvolution: Set<Long>? = null,
+        var prev_evolution: Set<SimplePokemonDto>? = null,
 
-        var nextEvolution: Set<Long>? = null
+        var next_evolution: Set<SimplePokemonDto>? = null
 )
