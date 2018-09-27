@@ -1,6 +1,7 @@
 package com.endre.pokemon.controller
 
 import com.endre.pokemon.entity.PokemonDto
+import com.endre.pokemon.entity.WrappedResponse
 import com.endre.pokemon.service.PokemonService
 import io.swagger.annotations.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -51,7 +52,7 @@ class PokemonController {
 
     @ApiOperation("Create new Pokemon")
     @PostMapping
-    fun post(@RequestBody pokemonDto: PokemonDto): ResponseEntity<Long> {
+    fun post(@RequestBody pokemonDto: PokemonDto): ResponseEntity<WrappedResponse<PokemonDto>> {
         return pokemonService.createPokemon(pokemonDto)
     }
 

@@ -1,7 +1,9 @@
 package com.endre.pokemon.service
 
 import com.endre.pokemon.entity.PokemonDto
+import com.endre.pokemon.entity.PokemonResponse
 import com.endre.pokemon.entity.SimplePokemonDto
+import com.endre.pokemon.entity.WrappedResponse
 import com.endre.pokemon.repository.PokemonRepository
 import com.endre.pokemon.util.PokemonConverter.Companion.convertFromDto
 import com.endre.pokemon.util.PokemonConverter.Companion.convertFromSimplePokemonDto
@@ -29,11 +31,16 @@ class PokemonServiceImp : PokemonService {
     private lateinit var pokemonRepository : PokemonRepository
 
 
-    override fun createPokemon(pokemonDto : PokemonDto) : ResponseEntity<Long> {
+    override fun createPokemon(pokemonDto : PokemonDto) : ResponseEntity<WrappedResponse<PokemonDto>> {
         if (pokemonDto.num == null || pokemonDto.name == null ||
                 pokemonDto.candy_count == null || pokemonDto.egg == null ||
                 pokemonDto.img == null || pokemonDto.type == null || pokemonDto.weaknesses == null)
-            return ResponseEntity(HttpStatus.BAD_REQUEST)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    PokemonResponse(
+                            code = 400,
+                            message = "One ore more fields was not defined"
+                    ).validated()
+            )
 
         val id: Long?
 
@@ -41,12 +48,23 @@ class PokemonServiceImp : PokemonService {
             id = pokemonRepository.save(convertFromDto(pokemonDto)).id
         } catch (e : Exception) {
             if(Throwables.getRootCause(e) is ConstraintViolationException) {
-                return ResponseEntity.status(400).build()
+                return ResponseEntity.status(400).body(
+                        PokemonResponse(
+                                code = 400,
+                                message = "Unable to create Pokemon due to constraint violation in the submitted DTO"
+                        ).validated()
+                )
             }
             throw e
         }
 
-        return ResponseEntity(id, HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                PokemonResponse(
+                        code = 204,
+                        message = "Pokemon successfully created",
+                        data = PokemonDto(id = id.toString())
+                ).validated()
+        )
     }
 
     override fun batchCreatePokemon(pokemons: List<PokemonDto>): ResponseEntity<Void> {
