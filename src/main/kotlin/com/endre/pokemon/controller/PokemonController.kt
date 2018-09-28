@@ -1,6 +1,7 @@
 package com.endre.pokemon.controller
 
 import com.endre.pokemon.entity.PokemonDto
+import com.endre.pokemon.entity.WrappedResponse
 import com.endre.pokemon.service.PokemonService
 import io.swagger.annotations.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,22 +45,22 @@ class PokemonController {
                @ApiParam("Pokedex number of the Pokemon")
                @RequestParam("num", required = false)
                num: String?
-    ): ResponseEntity<List<PokemonDto>> {
+    ): ResponseEntity<WrappedResponse<List<PokemonDto>>> {
         return pokemonService.findBy(name, num)
     }
 
 
     @ApiOperation("Create new Pokemon")
     @PostMapping
-    fun post(@RequestBody pokemonDto: PokemonDto): ResponseEntity<Long> {
+    fun post(@RequestBody pokemonDto: PokemonDto): ResponseEntity<WrappedResponse<PokemonDto>> {
         return pokemonService.createPokemon(pokemonDto)
     }
 
     @ApiOperation("Get single pokemon by the Pokedex number")
     @GetMapping(path = ["/{id}"])
-    fun get(@ApiParam("The pokedex number of the pokemon")
+    fun get(@ApiParam("The id of the pokemon")
             @PathVariable("id")
-            num: String?) : ResponseEntity<PokemonDto> {
+            num: String?) : ResponseEntity<WrappedResponse<PokemonDto>> {
         return pokemonService.find(num)
     }
 
@@ -70,7 +71,7 @@ class PokemonController {
                id: String?,
                @ApiParam("Pokemon data")
                @RequestBody
-               pokemonDto: PokemonDto): ResponseEntity<Void> {
+               pokemonDto: PokemonDto): ResponseEntity<WrappedResponse<PokemonDto>> {
         return pokemonService.update(id, pokemonDto)
     }
 
@@ -81,7 +82,7 @@ class PokemonController {
             num: String?,
             @ApiParam("The partial patch")
             @RequestBody
-            jsonPatch: String) : ResponseEntity<Void> {
+            jsonPatch: String) : ResponseEntity<WrappedResponse<PokemonDto>> {
         return pokemonService.patch(num, jsonPatch)
     }
 
@@ -89,7 +90,7 @@ class PokemonController {
     @DeleteMapping(path = ["/{id}"])
     fun delete(@ApiParam("id")
                 @PathVariable("id")
-                num: String?) : ResponseEntity<Any> {
+                num: String?) : ResponseEntity<WrappedResponse<PokemonDto>> {
         return pokemonService.delete(num)
     }
 
