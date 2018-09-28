@@ -15,13 +15,13 @@ interface PokemonService{
 
     fun batchCreatePokemon(pokemons: List<PokemonDto>): ResponseEntity<Void>
 
-    fun findBy(name: String?, num: String?): ResponseEntity<List<PokemonDto>>
+    fun findBy(name: String?, num: String?): ResponseEntity<WrappedResponse<List<PokemonDto>>>
 
-    fun find(num: String?): ResponseEntity<PokemonDto>
+    fun find(num: String?): ResponseEntity<WrappedResponse<PokemonDto>>
 
-    fun update(num: String?, dto: PokemonDto): ResponseEntity<Void>
+    fun update(num: String?, dto: PokemonDto): ResponseEntity<WrappedResponse<PokemonDto>>
 
-    fun patch(num: String?, jsonBody: String): ResponseEntity<Void>
+    fun patch(num: String?, jsonBody: String): ResponseEntity<WrappedResponse<PokemonDto>>
 
-    fun delete(num: String?): ResponseEntity<Any>
+    fun delete(num: String?): ResponseEntity<WrappedResponse<PokemonDto>>
 }

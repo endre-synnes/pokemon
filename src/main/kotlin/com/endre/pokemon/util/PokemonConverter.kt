@@ -49,7 +49,7 @@ class PokemonConverter {
         fun convertToSimplePokemonDto(pokemonNums: Set<String>?) : Set<SimplePokemonDto>?{
             return if (pokemonNums != null) {
                 if (pokemonNums.isNotEmpty()) {
-                    pokemonNums.asSequence().map { SimplePokemonDto(it, null) }.toHashSet()
+                    pokemonNums.asSequence().map { SimplePokemonDto(it) }.toHashSet()
                 } else null
             }else {
                 null

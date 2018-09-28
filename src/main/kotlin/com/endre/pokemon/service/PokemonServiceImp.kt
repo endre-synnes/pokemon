@@ -1,9 +1,6 @@
 package com.endre.pokemon.service
 
-import com.endre.pokemon.entity.PokemonDto
-import com.endre.pokemon.entity.PokemonResponse
-import com.endre.pokemon.entity.SimplePokemonDto
-import com.endre.pokemon.entity.WrappedResponse
+import com.endre.pokemon.entity.*
 import com.endre.pokemon.repository.PokemonRepository
 import com.endre.pokemon.util.PokemonConverter.Companion.convertFromDto
 import com.endre.pokemon.util.PokemonConverter.Companion.convertFromSimplePokemonDto
@@ -72,51 +69,105 @@ class PokemonServiceImp : PokemonService {
         return ResponseEntity.ok().build()
     }
 
-    override fun findBy(name: String?, num: String?): ResponseEntity<List<PokemonDto>> {
+    override fun findBy(name: String?, num: String?): ResponseEntity<WrappedResponse<List<PokemonDto>>> {
         val list = if (name.isNullOrBlank() && num.isNullOrBlank()) {
             pokemonRepository.findAll()
         }else if(!name.isNullOrBlank() && !num.isNullOrBlank()) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(
+                    PokemonResponses(
+                            code = 400,
+                            message = "You can only use one of the query parameters at a time."
+                    ).validated()
+            )
         } else if (!name.isNullOrBlank()){
             pokemonRepository.findAllByName(name!!)
         } else {
             pokemonRepository.findByNum(num!!)
         }
 
-        return ResponseEntity(convertToDto(list), HttpStatus.OK)
+        return ResponseEntity.ok(
+                PokemonResponses(
+                        code = 200,
+                        data = convertToDto(list)
+                ).validated()
+        )
     }
 
-    override fun find(num: String?): ResponseEntity<PokemonDto> {
+    override fun find(num: String?): ResponseEntity<WrappedResponse<PokemonDto>> {
         val id: Long
 
         try {
             id = num!!.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(404).build()
+            val message: String = if (num.equals("undefined")){
+                "Missing required field: num"
+            } else {
+                "Invalid num parameter, This should be a numeric string"
+            }
+            return ResponseEntity.status(400).body(
+                    PokemonResponse(
+                            code = 400,
+                            message = message
+                    ).validated()
+            )
         }
 
-        val dto = pokemonRepository.findById(id).orElse(null) ?: return ResponseEntity.status(404).build()
+        val dto = pokemonRepository
+                .findById(id)
+                .orElse(null) ?: return ResponseEntity
+                .status(404)
+                .body(
+                        PokemonResponse(
+                                code = 404,
+                                message = "Pokemon with id: $num is not found in our database"
+                        ).validated()
+        )
 
-        return ResponseEntity.ok(convertToDto(dto))
+        return ResponseEntity.ok(
+                PokemonResponse(
+                        code = 200,
+                        data = convertToDto(dto)
+                ).validated()
+        )
     }
 
-    override fun update(num: String?, dto: PokemonDto): ResponseEntity<Void> {
+    override fun update(num: String?, dto: PokemonDto): ResponseEntity<WrappedResponse<PokemonDto>> {
         val id: Long
 
         try {
             id = num!!.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(400).build()
+            val message: String = if (num.equals("undefined")){
+                "Missing required field: num"
+            } else {
+                "Invalid num parameter, This should be a numeric string"
+            }
+            return ResponseEntity.status(400).body(
+                    PokemonResponse(
+                            code = 400,
+                            message = message
+                    ).validated()
+            )
         }
 
         if (!pokemonRepository.existsById(id)) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(404).body(
+                    PokemonResponse(
+                            code = 404,
+                            message = "Pokemon with number: $num is not found in our database"
+                    ).validated()
+            )
         }
 
         if (dto.num == null || dto.img == null || dto.egg == null
                 || dto.candy_count == null || dto.name == null
                 || dto.type == null || dto.weaknesses == null) {
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(
+                    PokemonResponse(
+                            code = 400,
+                            message = "Your PUT request are missing one ore more of the required field(s)."
+                    ).validated()
+            )
         }
 
         var pokemon = pokemonRepository.findById(id).get()
@@ -133,20 +184,40 @@ class PokemonServiceImp : PokemonService {
 
         pokemonRepository.save(pokemon).id
 
-        return ResponseEntity.status(204).build()
+        return ResponseEntity.status(204).body(
+                PokemonResponse(
+                        code = 204,
+                        data = convertToDto(pokemon)
+                ).validated()
+        )
     }
 
-    override fun patch(num: String?, jsonBody: String): ResponseEntity<Void> {
+    override fun patch(num: String?, jsonBody: String): ResponseEntity<WrappedResponse<PokemonDto>> {
         val id: Long
 
         try {
             id = num!!.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(400).build()
+            val message: String = if (num.equals("undefined")){
+                "Missing required field: num"
+            } else {
+                "Invalid num parameter, This should be a numeric string"
+            }
+            return ResponseEntity.status(400).body(
+                    PokemonResponse(
+                            code = 400,
+                            message = message
+                    ).validated()
+            )
         }
 
         if (!pokemonRepository.existsById(id)) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(404).body(
+                    PokemonResponse(
+                            code = 404,
+                            message = "Pokemon with number: $num is not found in our database"
+                    ).validated()
+            )
         }
 
         val jackson = ObjectMapper()
@@ -157,12 +228,22 @@ class PokemonServiceImp : PokemonService {
             jsonNode = jackson.readValue(jsonBody, JsonNode::class.java)
         } catch (e: Exception) {
             //Invalid JSON data as input
-            return ResponseEntity.status(400).build()
+            return ResponseEntity.status(400).body(
+                    PokemonResponse(
+                            code = 400,
+                            message = "Invalid JSON object, this should be a valid JSON containing Pokemon meta data"
+                    ).validated()
+            )
         }
 
         if (jsonNode.has("id")) {
             //shouldn't be allowed to modify the counter id
-            return ResponseEntity.status(409).build()
+            return ResponseEntity.status(409).body(
+                    PokemonResponse(
+                            code = 409,
+                            message = "Illegal operation. You are not allowed to change the database id of a Pokemon"
+                    ).validated()
+            )
         }
 
         var pokemon = pokemonRepository.findById(id).get()
@@ -172,7 +253,7 @@ class PokemonServiceImp : PokemonService {
             if (num.isTextual){
                 pokemon.num = num.asText()
             } else {
-                return ResponseEntity.status(400).build()
+                return jsonFieldErrorMessage("num", "String")
             }
         }
 
@@ -181,7 +262,7 @@ class PokemonServiceImp : PokemonService {
             if (name.isTextual){
                 pokemon.name = name.asText()
             } else {
-                return ResponseEntity.status(400).build()
+                return jsonFieldErrorMessage("name", "String")
             }
         }
 
@@ -190,7 +271,7 @@ class PokemonServiceImp : PokemonService {
             if (img.isTextual){
                 pokemon.img = img.asText()
             } else {
-                return ResponseEntity.status(400).build()
+                return jsonFieldErrorMessage("img", "String")
             }
         }
 
@@ -199,7 +280,8 @@ class PokemonServiceImp : PokemonService {
             if (candyCount.isInt){
                 pokemon.candyCount = candyCount.asInt()
             } else {
-                return ResponseEntity.status(400).build()
+                return jsonFieldErrorMessage("candy_count", "Int")
+
             }
         }
 
@@ -208,81 +290,108 @@ class PokemonServiceImp : PokemonService {
             if (egg.isTextual){
                 pokemon.egg = egg.asText()
             } else {
-                return ResponseEntity.status(400).build()
+                return jsonFieldErrorMessage("egg", "String")
             }
         }
 
         if (jsonNode.has("type")){
             val type = jsonNode.get("type")
-            if (type.isNull){
-                pokemon.type = null
-            } else if (type.isArray){
-                pokemon.type = type.toSet().map { it.asText() }.toSet()
-            } else {
-                return ResponseEntity.status(400).build()
+            when {
+                type.isNull -> pokemon.type = null
+                type.isArray -> pokemon.type = type.toSet().map { it.asText() }.toSet()
+                else -> return jsonFieldErrorMessage("type", "Array")
             }
         }
 
         if (jsonNode.has("weaknesses")){
             val weaknesses = jsonNode.get("weaknesses")
-            if (weaknesses.isNull){
-                pokemon.weaknesses = null
-            } else if (weaknesses.isArray){
-                pokemon.weaknesses = weaknesses.toSet().map { it.asText() }.toSet()
-            } else {
-                return ResponseEntity.status(400).build()
+            when {
+                weaknesses.isNull -> pokemon.weaknesses = null
+                weaknesses.isArray -> pokemon.weaknesses = weaknesses.toSet().map { it.asText() }.toSet()
+                else -> return jsonFieldErrorMessage("weaknesses", "Array")
             }
         }
 
         if (jsonNode.has("prev_evolution")){
             val prevEvolution = jsonNode.get("prev_evolution")
-            if (prevEvolution.isNull){
-                pokemon.prevEvolution = null
+            when {
+                prevEvolution.isNull -> pokemon.prevEvolution = null
+                prevEvolution.isArray -> {
+                    val mapper = jacksonObjectMapper()
+                    val tmp: Set<SimplePokemonDto> = mapper.readValue(prevEvolution.toString())
+                    pokemon.prevEvolution = convertFromSimplePokemonDto(tmp)
 
-            } else if (prevEvolution.isArray){
-                val mapper = jacksonObjectMapper()
-                val tmp: Set<SimplePokemonDto> = mapper.readValue(prevEvolution.toString())
-                pokemon.prevEvolution = convertFromSimplePokemonDto(tmp)
-
-            } else {
-                return ResponseEntity.status(400).build()
+                }
+                else -> return jsonFieldErrorMessage("prev_evolution", "Array")
             }
         }
 
         if (jsonNode.has("next_evolution")){
             val nextEvolution = jsonNode.get("next_evolution")
-            if (nextEvolution.isNull){
-                pokemon.nextEvolution = null
+            when {
+                nextEvolution.isNull -> pokemon.nextEvolution = null
+                nextEvolution.isArray -> {
+                    val mapper = jacksonObjectMapper()
+                    val tmp: Set<SimplePokemonDto> = mapper.readValue(nextEvolution.toString())
+                    pokemon.nextEvolution = convertFromSimplePokemonDto(tmp)
 
-            } else if (nextEvolution.isArray){
-                val mapper = jacksonObjectMapper()
-                val tmp: Set<SimplePokemonDto> = mapper.readValue(nextEvolution.toString())
-                pokemon.nextEvolution = convertFromSimplePokemonDto(tmp)
-
-            } else {
-                return ResponseEntity.status(400).build()
+                }
+                else -> return jsonFieldErrorMessage("next_evolution", "Array")
             }
         }
 
         pokemonRepository.save(pokemon).id
 
-        return ResponseEntity.status(204).build()
+        return ResponseEntity.status(204).body(
+                PokemonResponse(
+                        code = 204,
+                        data = convertToDto(pokemon)
+                ).validated()
+        )
     }
 
-    override fun delete(num: String?): ResponseEntity<Any> {
+    private fun jsonFieldErrorMessage(field: String, type: String) : ResponseEntity<WrappedResponse<PokemonDto>> {
+        return ResponseEntity.status(400).body(
+                PokemonResponse(
+                        code = 400,
+                        message = "Invalid field type of: $field, this should be a valid JSON field of type: $type"
+                ).validated()
+        )
+    }
+
+    override fun delete(num: String?): ResponseEntity<WrappedResponse<PokemonDto>> {
         val id: Long
 
         try {
             id = num!!.toLong()
         } catch (e: Exception) {
-            return ResponseEntity.status(400).build()
+            val message: String = if (num.equals("undefined")){
+                "Missing required field: num"
+            } else {
+                "Invalid num parameter, This should be a numeric string"
+            }
+            return ResponseEntity.status(400).body(
+                    PokemonResponse(
+                            code = 400,
+                            message = message
+                    ).validated()
+            )
         }
 
         if (!pokemonRepository.existsById(id)) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(404).body(
+                    PokemonResponse(
+                            code = 404,
+                            message = "Pokemon with number: $num is not found in our database"
+                    ).validated()
+            )
         }
 
         pokemonRepository.deleteById(id)
-        return ResponseEntity.status(204).build()
+        return ResponseEntity.status(204).body(
+                PokemonResponse(
+                        code = 204
+                ).validated()
+        )
     }
 }
