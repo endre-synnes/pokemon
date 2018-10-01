@@ -13,3 +13,11 @@ This is a Pokemon API written in Kotlin.
  - POST
  - PATCH /{id}
  - DELETE /{id}
+
+
+## How to test/run the application ##
+1. Either clone og download the ZIP file.
+2. Open folder and run: mvn clean install.
+3. Start the Spring application.
+4. Go to this url in your web browser: http://localhost:8080/api/swagger-ui.html#/
+5. Test the different requests presentet on this page.
