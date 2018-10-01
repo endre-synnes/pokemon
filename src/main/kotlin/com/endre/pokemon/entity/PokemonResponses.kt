@@ -1,9 +1,11 @@
 package com.endre.pokemon.entity
 
+import com.endre.pokemon.entity.hal.PageDto
+
 class PokemonResponses (
         code: Int? = null,
-        data: List<PokemonDto>? = null,
+        data: PageDto<PokemonDto>? = null,
         message: String? = null,
         status: ResponseStatus? = null
 
-) : WrappedResponse<List<PokemonDto>>(code, data, message, status)
+) : WrappedResponse<PageDto<PokemonDto>>(code, data, message, status)
