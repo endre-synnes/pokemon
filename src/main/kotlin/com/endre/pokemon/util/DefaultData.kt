@@ -33,5 +33,7 @@ class DefaultData {
         pokemons.forEach { println(it) }
 
         pokemonService.batchCreatePokemon(pokemons)
+
+
     }
 }

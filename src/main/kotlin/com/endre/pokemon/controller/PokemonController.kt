@@ -47,6 +47,10 @@ class PokemonController {
                @RequestParam("num", required = false)
                num: String?,
 
+               @ApiParam("Pokemon type")
+               @RequestParam("type", required = false)
+               type: String?,
+
                @ApiParam("Offset in the list of pokemons")
                @RequestParam("offset", defaultValue = "0")
                offset: Int,
@@ -55,7 +59,7 @@ class PokemonController {
                @RequestParam("limit", defaultValue = "10")
                limit: Int
     ): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
-        return pokemonService.findBy(name, num, offset, limit)
+        return pokemonService.findBy(name, num, type, offset, limit)
     }
 
 

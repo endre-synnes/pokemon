@@ -73,7 +73,7 @@ class PokemonServiceImp : PokemonService {
         return ResponseEntity.ok().build()
     }
 
-    override fun findBy(name: String?, num: String?, offset: Int, limit: Int): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
+    override fun findBy(name: String?, num: String?, type: String?, offset: Int, limit: Int): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
 
         if (offset < 0 || limit < 1){
             return ResponseEntity.status(400).body(
@@ -84,19 +84,23 @@ class PokemonServiceImp : PokemonService {
             )
         }
 
-        val list = if (name.isNullOrBlank() && num.isNullOrBlank()) {
+        val list = if (name.isNullOrBlank() && num.isNullOrBlank() && type.isNullOrBlank()) {
             pokemonRepository.findAll()
-        }else if(!name.isNullOrBlank() && !num.isNullOrBlank()) {
+        }else if(!name.isNullOrBlank() && !num.isNullOrBlank() ||
+                !num.isNullOrBlank() && !type.isNullOrBlank() ||
+                !name.isNullOrBlank() && !type.isNullOrBlank()) {
             return ResponseEntity.status(400).body(
                     PokemonResponses(
                             code = 400,
-                            message = "You can only use one of the query parameters at a time."
+                            message = "You can only use one of the filters at a time."
                     ).validated()
             )
         } else if (!name.isNullOrBlank()){
             pokemonRepository.findAllByName(name!!)
-        } else {
+        } else if (!num.isNullOrBlank()){
             pokemonRepository.findByNum(num!!)
+        } else {
+            pokemonRepository.findAllByType(type!!)
         }
 
         if (offset != 0 && offset >= list.count()){

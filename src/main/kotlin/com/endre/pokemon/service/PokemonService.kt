@@ -16,7 +16,7 @@ interface PokemonService{
 
     fun batchCreatePokemon(pokemons: List<PokemonDto>): ResponseEntity<Void>
 
-    fun findBy(name: String?, num: String?, offset: Int, limit: Int): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>>
+    fun findBy(name: String?, num: String?, type: String?, offset: Int, limit: Int): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>>
 
     fun find(num: String?): ResponseEntity<WrappedResponse<PokemonDto>>
 
