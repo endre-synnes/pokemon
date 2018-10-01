@@ -1,6 +1,8 @@
 package com.endre.pokemon.service
 
 import com.endre.pokemon.entity.*
+import com.endre.pokemon.entity.hal.HalLink
+import com.endre.pokemon.entity.hal.PageDto
 import com.endre.pokemon.repository.PokemonRepository
 import com.endre.pokemon.util.PokemonConverter.Companion.convertFromDto
 import com.endre.pokemon.util.PokemonConverter.Companion.convertFromSimplePokemonDto
@@ -14,6 +16,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import javax.validation.ConstraintViolationException
 import com.fasterxml.jackson.module.kotlin.*
+import org.springframework.web.util.UriComponentsBuilder
+import kotlin.streams.toList
 
 /**
  * Created by Endre on 02.09.2018.
@@ -69,26 +73,85 @@ class PokemonServiceImp : PokemonService {
         return ResponseEntity.ok().build()
     }
 
-    override fun findBy(name: String?, num: String?): ResponseEntity<WrappedResponse<List<PokemonDto>>> {
-        val list = if (name.isNullOrBlank() && num.isNullOrBlank()) {
-            pokemonRepository.findAll()
-        }else if(!name.isNullOrBlank() && !num.isNullOrBlank()) {
+    override fun findBy(name: String?, num: String?, type: String?, offset: Int, limit: Int): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
+
+        if (offset < 0 || limit < 1){
             return ResponseEntity.status(400).body(
                     PokemonResponses(
                             code = 400,
-                            message = "You can only use one of the query parameters at a time."
+                            message = "offset has to be a positive number and limit har to be 1 or greater."
+                    ).validated()
+            )
+        }
+
+        val list = if (name.isNullOrBlank() && num.isNullOrBlank() && type.isNullOrBlank()) {
+            pokemonRepository.findAll()
+        }else if(!name.isNullOrBlank() && !num.isNullOrBlank() ||
+                !num.isNullOrBlank() && !type.isNullOrBlank() ||
+                !name.isNullOrBlank() && !type.isNullOrBlank()) {
+            return ResponseEntity.status(400).body(
+                    PokemonResponses(
+                            code = 400,
+                            message = "You can only use one of the filters at a time."
                     ).validated()
             )
         } else if (!name.isNullOrBlank()){
             pokemonRepository.findAllByName(name!!)
-        } else {
+        } else if (!num.isNullOrBlank()){
             pokemonRepository.findByNum(num!!)
+        } else {
+            pokemonRepository.findAllByType(type!!)
+        }
+
+        if (offset != 0 && offset >= list.count()){
+            return ResponseEntity.status(400).body(
+                    PokemonResponses(
+                            code = 400,
+                            message = "Your offset is larger than the number of elements returned by your request."
+                    )
+            )
+        }
+
+        val convertedList = list.toList()
+                .stream()
+                .skip(offset.toLong())
+                .limit(limit.toLong())
+                .map { convertToDto(it) }
+                .toList().toMutableList()
+
+        val dto = PageDto<PokemonDto>(convertedList, offset, limit, list.count())
+
+        var uriBuilder = UriComponentsBuilder
+                .fromPath("/pokemon")
+                .queryParam("limit", limit)
+
+        if (name != null){
+            uriBuilder = uriBuilder.queryParam("name", name)
+        }
+        if (num != null){
+            uriBuilder = uriBuilder.queryParam("num", num)
+        }
+
+        dto._self = HalLink(uriBuilder.cloneBuilder()
+                .queryParam("offset", offset)
+                .build().toString())
+
+        if (!convertedList.isEmpty() && offset > 0) {
+            dto.previous = HalLink(uriBuilder.cloneBuilder()
+                    .queryParam("offset", Math.max(offset - limit, 0))
+                    .build().toString())
+        }
+
+        if (offset + limit < list.count()) {
+            dto.next = HalLink(uriBuilder.cloneBuilder()
+                    .queryParam("offset", offset + limit)
+                    .build().toString())
         }
 
         return ResponseEntity.ok(
                 PokemonResponses(
                         code = 200,
-                        data = convertToDto(list)
+                        data = dto
                 ).validated()
         )
     }

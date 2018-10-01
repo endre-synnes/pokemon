@@ -2,6 +2,7 @@ package com.endre.pokemon.controller
 
 import com.endre.pokemon.entity.PokemonDto
 import com.endre.pokemon.entity.WrappedResponse
+import com.endre.pokemon.entity.hal.PageDto
 import com.endre.pokemon.service.PokemonService
 import io.swagger.annotations.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -42,11 +43,23 @@ class PokemonController {
                @RequestParam("name", required = false)
                name : String?,
 
-               @ApiParam("Pokedex number of the Pokemon")
+               @ApiParam("Pokedex number of the Pokemon (has to be 3 characters long f.eks: 005)")
                @RequestParam("num", required = false)
-               num: String?
-    ): ResponseEntity<WrappedResponse<List<PokemonDto>>> {
-        return pokemonService.findBy(name, num)
+               num: String?,
+
+               @ApiParam("Pokemon type")
+               @RequestParam("type", required = false)
+               type: String?,
+
+               @ApiParam("Offset in the list of pokemons")
+               @RequestParam("offset", defaultValue = "0")
+               offset: Int,
+
+               @ApiParam("Limit of pokemons in a single retrieved page")
+               @RequestParam("limit", defaultValue = "10")
+               limit: Int
+    ): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
+        return pokemonService.findBy(name, num, type, offset, limit)
     }
 
 

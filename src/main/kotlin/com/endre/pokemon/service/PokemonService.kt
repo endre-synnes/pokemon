@@ -2,6 +2,7 @@ package com.endre.pokemon.service
 
 import com.endre.pokemon.entity.PokemonDto
 import com.endre.pokemon.entity.WrappedResponse
+import com.endre.pokemon.entity.hal.PageDto
 import org.springframework.http.ResponseEntity
 
 /**
@@ -15,7 +16,7 @@ interface PokemonService{
 
     fun batchCreatePokemon(pokemons: List<PokemonDto>): ResponseEntity<Void>
 
-    fun findBy(name: String?, num: String?): ResponseEntity<WrappedResponse<List<PokemonDto>>>
+    fun findBy(name: String?, num: String?, type: String?, offset: Int, limit: Int): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>>
 
     fun find(num: String?): ResponseEntity<WrappedResponse<PokemonDto>>
 
