@@ -65,7 +65,7 @@ class PokemonController {
 
     @ApiOperation("Create new Pokemon")
     @PostMapping
-    fun post(@RequestBody pokemonDto: PokemonDto): ResponseEntity<WrappedResponse<PokemonDto>> {
+    fun post(@RequestBody pokemonDto: PokemonDto): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
         return pokemonService.createPokemon(pokemonDto)
     }
 

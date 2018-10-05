@@ -4,7 +4,6 @@ import com.endre.pokemon.model.hal.HalLink
 import com.endre.pokemon.model.hal.PageDto
 import com.endre.pokemon.model.*
 import com.endre.pokemon.model.dto.PokemonDto
-import com.endre.pokemon.model.dto.SimplePokemonDto
 import com.endre.pokemon.repository.PokemonRepository
 import com.endre.pokemon.util.PokemonConverter.Companion.convertFromDto
 import com.endre.pokemon.util.PokemonConverter.Companion.convertFromSimplePokemonDto
@@ -34,13 +33,13 @@ class PokemonServiceImp : PokemonService {
     private lateinit var pokemonRepository : PokemonRepository
 
 
-    override fun createPokemon(pokemonDto : PokemonDto) : ResponseEntity<WrappedResponse<PokemonDto>> {
+    override fun createPokemon(pokemonDto : PokemonDto) : ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
         if (pokemonDto.num == null || pokemonDto.name == null ||
                 pokemonDto.candy_count == null || pokemonDto.egg == null ||
                 pokemonDto.img == null || pokemonDto.type == null || pokemonDto.weaknesses == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    PokemonResponse(
-                            code = 400,
+                    PokemonResponses(
+                            code = HttpStatus.BAD_REQUEST.value(),
                             message = "One ore more fields was not defined"
                     ).validated()
             )
@@ -51,9 +50,9 @@ class PokemonServiceImp : PokemonService {
             id = pokemonRepository.save(convertFromDto(pokemonDto)).id
         } catch (e : Exception) {
             if(Throwables.getRootCause(e) is ConstraintViolationException) {
-                return ResponseEntity.status(400).body(
-                        PokemonResponse(
-                                code = 400,
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                        PokemonResponses(
+                                code = HttpStatus.BAD_REQUEST.value(),
                                 message = "Unable to create Pokemon due to constraint violation in the submitted DTO"
                         ).validated()
                 )
@@ -61,11 +60,21 @@ class PokemonServiceImp : PokemonService {
             throw e
         }
 
+        val dto = PageDto(
+                list = mutableListOf(PokemonDto(id = id.toString())),
+                totalSize = 1)
+
+        val uriBuilder = UriComponentsBuilder
+                .fromPath("/pokemon/${id.toString()}")
+
+        dto._self = HalLink(uriBuilder.cloneBuilder()
+                .build().toString())
+
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                PokemonResponse(
-                        code = 204,
+                PokemonResponses(
+                        code = HttpStatus.CREATED.value(),
                         message = "Pokemon successfully created",
-                        data = PokemonDto(id = id.toString())
+                        data = dto
                 ).validated()
         )
     }
@@ -383,7 +392,7 @@ class PokemonServiceImp : PokemonService {
                 prevEvolution.isNull -> pokemon.prevEvolution = null
                 prevEvolution.isArray -> {
                     val mapper = jacksonObjectMapper()
-                    val tmp: Set<SimplePokemonDto> = mapper.readValue(prevEvolution.toString())
+                    val tmp: Set<PokemonDto> = mapper.readValue(prevEvolution.toString())
                     pokemon.prevEvolution = convertFromSimplePokemonDto(tmp)
 
                 }
@@ -397,7 +406,7 @@ class PokemonServiceImp : PokemonService {
                 nextEvolution.isNull -> pokemon.nextEvolution = null
                 nextEvolution.isArray -> {
                     val mapper = jacksonObjectMapper()
-                    val tmp: Set<SimplePokemonDto> = mapper.readValue(nextEvolution.toString())
+                    val tmp: Set<PokemonDto> = mapper.readValue(nextEvolution.toString())
                     pokemon.nextEvolution = convertFromSimplePokemonDto(tmp)
 
                 }

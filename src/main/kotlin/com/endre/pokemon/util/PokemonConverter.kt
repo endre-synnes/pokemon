@@ -2,7 +2,6 @@ package com.endre.pokemon.util
 
 import com.endre.pokemon.model.entity.Pokemon
 import com.endre.pokemon.model.dto.PokemonDto
-import com.endre.pokemon.model.dto.SimplePokemonDto
 
 /**
  * Created by Endre on 02.09.2018.
@@ -46,17 +45,17 @@ class PokemonConverter {
             return pokemon.map { convertToDto(it) }
         }
 
-        fun convertToSimplePokemonDto(pokemonNums: Set<String>?) : Set<SimplePokemonDto>?{
+        fun convertToSimplePokemonDto(pokemonNums: Set<String>?) : Set<PokemonDto>?{
             return if (pokemonNums != null) {
                 if (pokemonNums.isNotEmpty()) {
-                    pokemonNums.asSequence().map { SimplePokemonDto(it) }.toHashSet()
+                    pokemonNums.asSequence().map { PokemonDto(id = it) }.toHashSet()
                 } else null
             }else {
                 null
             }
         }
 
-        fun convertFromSimplePokemonDto(simpleDtos: Set<SimplePokemonDto>?): Set<String>? {
+        fun convertFromSimplePokemonDto(simpleDtos: Set<PokemonDto>?): Set<String>? {
             return if (simpleDtos != null) {
                 if (simpleDtos.isNotEmpty()) {
                     simpleDtos.asSequence().map { it.num!! }.toHashSet()
