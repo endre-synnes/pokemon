@@ -1,8 +1,8 @@
 package com.endre.pokemon.util
 
-import com.endre.pokemon.entity.Pokemon
-import com.endre.pokemon.entity.PokemonDto
-import com.endre.pokemon.entity.SimplePokemonDto
+import com.endre.pokemon.model.entity.Pokemon
+import com.endre.pokemon.model.dto.PokemonDto
+import com.endre.pokemon.model.dto.SimplePokemonDto
 
 /**
  * Created by Endre on 02.09.2018.
@@ -39,7 +39,7 @@ class PokemonConverter {
                     pokemon.weaknesses,
                     convertToSimplePokemonDto(pokemon.prevEvolution),
                     convertToSimplePokemonDto(pokemon.nextEvolution)
-                    )
+            )
         }
 
         fun convertToDto(pokemon: Iterable<Pokemon>): List<PokemonDto> {

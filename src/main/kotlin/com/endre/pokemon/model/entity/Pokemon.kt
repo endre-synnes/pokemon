@@ -1,4 +1,4 @@
-package com.endre.pokemon.entity
+package com.endre.pokemon.model.entity
 
 
 import javax.persistence.ElementCollection

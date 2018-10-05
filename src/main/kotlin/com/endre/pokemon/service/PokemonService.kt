@@ -1,8 +1,8 @@
 package com.endre.pokemon.service
 
-import com.endre.pokemon.entity.PokemonDto
-import com.endre.pokemon.entity.WrappedResponse
-import com.endre.pokemon.entity.hal.PageDto
+import com.endre.pokemon.model.dto.PokemonDto
+import com.endre.pokemon.model.WrappedResponse
+import com.endre.pokemon.model.hal.PageDto
 import org.springframework.http.ResponseEntity
 
 /**

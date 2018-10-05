@@ -1,4 +1,4 @@
-package com.endre.pokemon.entity.hal
+package com.endre.pokemon.model.hal
 
 import io.swagger.annotations.ApiModelProperty
 

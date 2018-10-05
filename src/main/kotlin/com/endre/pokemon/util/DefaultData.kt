@@ -1,6 +1,6 @@
 package com.endre.pokemon.util
 
-import com.endre.pokemon.entity.PokemonDto
+import com.endre.pokemon.model.dto.PokemonDto
 import com.endre.pokemon.service.PokemonService
 import com.google.gson.reflect.TypeToken
 import org.springframework.beans.factory.annotation.Autowired

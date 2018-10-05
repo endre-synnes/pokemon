@@ -1,4 +1,4 @@
-package com.endre.pokemon.entity
+package com.endre.pokemon.model.dto
 
 import io.swagger.annotations.ApiModelProperty
 

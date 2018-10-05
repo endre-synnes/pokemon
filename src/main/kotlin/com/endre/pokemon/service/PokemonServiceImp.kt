@@ -1,8 +1,10 @@
 package com.endre.pokemon.service
 
-import com.endre.pokemon.entity.*
-import com.endre.pokemon.entity.hal.HalLink
-import com.endre.pokemon.entity.hal.PageDto
+import com.endre.pokemon.model.hal.HalLink
+import com.endre.pokemon.model.hal.PageDto
+import com.endre.pokemon.model.*
+import com.endre.pokemon.model.dto.PokemonDto
+import com.endre.pokemon.model.dto.SimplePokemonDto
 import com.endre.pokemon.repository.PokemonRepository
 import com.endre.pokemon.util.PokemonConverter.Companion.convertFromDto
 import com.endre.pokemon.util.PokemonConverter.Companion.convertFromSimplePokemonDto
