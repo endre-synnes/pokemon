@@ -1,8 +1,8 @@
 package com.endre.pokemon.service
 
-import com.endre.pokemon.entity.PokemonDto
-import com.endre.pokemon.entity.WrappedResponse
-import com.endre.pokemon.entity.hal.PageDto
+import com.endre.pokemon.model.dto.PokemonDto
+import com.endre.pokemon.model.WrappedResponse
+import com.endre.pokemon.model.hal.PageDto
 import org.springframework.http.ResponseEntity
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity
  */
 interface PokemonService{
 
-    fun createPokemon(pokemonDto : PokemonDto) : ResponseEntity<WrappedResponse<PokemonDto>>
+    fun createPokemon(pokemonDto : PokemonDto) : ResponseEntity<WrappedResponse<PageDto<PokemonDto>>>
 
     fun batchCreatePokemon(pokemons: List<PokemonDto>): ResponseEntity<Void>
 

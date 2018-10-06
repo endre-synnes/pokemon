@@ -1,4 +1,6 @@
-package com.endre.pokemon.entity
+package com.endre.pokemon.model
+
+import com.endre.pokemon.model.dto.PokemonDto
 
 class PokemonResponse(
         code: Int? = null,

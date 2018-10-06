@@ -1,4 +1,4 @@
-package com.endre.pokemon.entity
+package com.endre.pokemon.model.dto
 
 import io.swagger.annotations.ApiModelProperty
 
@@ -31,7 +31,7 @@ data class PokemonDto(
 
         var weaknesses: Set<String>? = null,
 
-        var prev_evolution: Set<SimplePokemonDto>? = null,
+        var prev_evolution: Set<PokemonDto>? = null,
 
-        var next_evolution: Set<SimplePokemonDto>? = null
+        var next_evolution: Set<PokemonDto>? = null
 )
