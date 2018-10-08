@@ -244,7 +244,7 @@ class PokemonServiceImp : PokemonService {
             )
         }
 
-        var pokemon = pokemonRepository.findById(id).get()
+        val pokemon = pokemonRepository.findById(id).get()
 
         pokemon.num = dto.num!!
         pokemon.candyCount = dto.candy_count!!
@@ -320,7 +320,7 @@ class PokemonServiceImp : PokemonService {
             )
         }
 
-        var pokemon = pokemonRepository.findById(id).get()
+        val pokemon = pokemonRepository.findById(id).get()
 
         if (jsonNode.has("num")){
             val num = jsonNode.get("num")
