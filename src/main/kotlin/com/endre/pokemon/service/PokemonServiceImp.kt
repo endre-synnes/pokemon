@@ -84,7 +84,7 @@ class PokemonServiceImp : PokemonService {
         return ResponseEntity.ok().build()
     }
 
-    override fun findBy(name: String?, num: String?, type: String?, offset: Int, limit: Int): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
+    override fun findBy(name: String?, num: String?, type: String?, weaknesses: String?, offset: Int, limit: Int): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
 
         if (offset < 0 || limit < 1){
             return ResponseEntity.status(400).body(
@@ -95,11 +95,17 @@ class PokemonServiceImp : PokemonService {
             )
         }
 
-        val list = if (name.isNullOrBlank() && num.isNullOrBlank() && type.isNullOrBlank()) {
+        val list = if (
+                name.isNullOrBlank() && num.isNullOrBlank() &&
+                type.isNullOrBlank() && weaknesses.isNullOrBlank()) {
             pokemonRepository.findAll()
-        }else if(!name.isNullOrBlank() && !num.isNullOrBlank() ||
-                !num.isNullOrBlank() && !type.isNullOrBlank() ||
-                !name.isNullOrBlank() && !type.isNullOrBlank()) {
+        }else if(
+                !name.isNullOrBlank() && !num.isNullOrBlank()       ||
+                !num.isNullOrBlank() && !type.isNullOrBlank()       ||
+                !name.isNullOrBlank() && !type.isNullOrBlank()      ||
+                !name.isNullOrBlank() && !weaknesses.isNullOrBlank()||
+                !num.isNullOrBlank() && !weaknesses.isNullOrBlank() ||
+                !type.isNullOrBlank() && !weaknesses.isNullOrBlank()) {
             return ResponseEntity.status(400).body(
                     PokemonResponses(
                             code = 400,
@@ -107,11 +113,13 @@ class PokemonServiceImp : PokemonService {
                     ).validated()
             )
         } else if (!name.isNullOrBlank()){
-            pokemonRepository.findAllByName(name!!)
+            pokemonRepository.findAllByNameContainingIgnoreCase(name!!)
         } else if (!num.isNullOrBlank()){
             pokemonRepository.findByNum(num!!)
+        } else if (!type.isNullOrBlank()){
+            pokemonRepository.findByTypeIgnoreCase(type!!)
         } else {
-            pokemonRepository.findAllByType(type!!)
+            pokemonRepository.findByWeaknessesIgnoreCase(weaknesses!!)
         }
 
         if (offset != 0 && offset >= list.count()){

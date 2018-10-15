@@ -14,11 +14,11 @@ import org.springframework.stereotype.Repository
 @Repository
 interface PokemonRepository : CrudRepository<Pokemon, Long> {
 
-    fun findAllByName(name: String): Iterable<Pokemon>
+    fun findAllByNameContainingIgnoreCase(name: String): Iterable<Pokemon>
 
     fun findByNum(num: String): Iterable<Pokemon>
 
-    @Query("select p from Pokemon p WHERE :type in elements(p.type)")
-    fun findAllByType(@Param("type") type: String) : Iterable<Pokemon>
+    fun findByTypeIgnoreCase(type: String): Iterable<Pokemon>
 
+    fun findByWeaknessesIgnoreCase(weakness: String): Iterable<Pokemon>
 }
