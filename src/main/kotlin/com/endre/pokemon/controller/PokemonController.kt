@@ -23,7 +23,7 @@ const val BASE_JSON = "application/json;charset=UTF-8"
 
 @Api(value = "/pokemon", description = "Handling of creating and retrieving pokemon's")
 @RequestMapping(
-        path = ["/pokemon"], // when the url is "<base>/news", then this class will be used to handle it
+        path = ["/pokemon"],
         produces = [BASE_JSON]
 )
 @RestController
@@ -37,7 +37,7 @@ class PokemonController {
     private lateinit var pokemonService: PokemonService
 
 
-    @ApiOperation("Get all pokemon's")
+    @ApiOperation("Get pokemon's")
     @GetMapping
     fun getAll(@ApiParam("Name of the Pokemon")
                @RequestParam("name", required = false)
@@ -51,7 +51,11 @@ class PokemonController {
                @RequestParam("type", required = false)
                type: String?,
 
-               @ApiParam("Offset in the list of pokemons")
+               @ApiParam("Pokemon weaknesses")
+               @RequestParam("weaknesses", required = false)
+               weaknesses: String?,
+
+               @ApiParam("Offset in the list of pokemon's")
                @RequestParam("offset", defaultValue = "0")
                offset: Int,
 
@@ -59,7 +63,7 @@ class PokemonController {
                @RequestParam("limit", defaultValue = "10")
                limit: Int
     ): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
-        return pokemonService.findBy(name, num, type, offset, limit)
+        return pokemonService.findBy(name, num, type, weaknesses, offset, limit)
     }
 
 
@@ -69,7 +73,7 @@ class PokemonController {
         return pokemonService.createPokemon(pokemonDto)
     }
 
-    @ApiOperation("Get single pokemon by the Pokedex number")
+    @ApiOperation("Get single pokemon by the id")
     @GetMapping(path = ["/{id}"])
     fun get(@ApiParam("The id of the pokemon")
             @PathVariable("id")
@@ -79,7 +83,7 @@ class PokemonController {
 
     @ApiOperation("Update the whole pokemon with new information")
     @PutMapping(path = ["/{id}"])
-    fun update(@ApiParam("The pokedex number of the pokemon")
+    fun update(@ApiParam("The id of the pokemon")
                @PathVariable("id")
                id: String?,
                @ApiParam("Pokemon data")
@@ -90,7 +94,7 @@ class PokemonController {
 
     @ApiOperation("Update part of the pokemon's data")
     @PatchMapping(path = ["/{id}"])
-    fun patch(@ApiParam("The pokedex number of the pokemon")
+    fun patch(@ApiParam("The id of the pokemon")
             @PathVariable("id")
             num: String?,
             @ApiParam("The partial patch")
@@ -99,15 +103,15 @@ class PokemonController {
         return pokemonService.patch(num, jsonPatch)
     }
 
-    @ApiOperation("Delete a Pokemon by pokedex number")
+    @ApiOperation("Delete a Pokemon by id")
     @DeleteMapping(path = ["/{id}"])
-    fun delete(@ApiParam("id")
+    fun delete(@ApiParam("The id of the pokemon")
                 @PathVariable("id")
                 num: String?) : ResponseEntity<WrappedResponse<PokemonDto>> {
         return pokemonService.delete(num)
     }
 
-    @ApiOperation("Get single pokemon by pokedex number")
+    @ApiOperation("Get single pokemon by the id")
     @ApiResponses(ApiResponse(code = 301, message = "Deprecated URI, moved permanently."))
     @GetMapping(path = ["/id/{id}"])
     @Deprecated
