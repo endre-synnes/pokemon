@@ -104,18 +104,21 @@ class PokemonServiceImp : PokemonService {
                 !num.isNullOrBlank() && !type.isNullOrBlank()       ||
                 !name.isNullOrBlank() && !type.isNullOrBlank()      ||
                 !name.isNullOrBlank() && !weaknesses.isNullOrBlank()||
-                !num.isNullOrBlank() && !weaknesses.isNullOrBlank() ||
-                !type.isNullOrBlank() && !weaknesses.isNullOrBlank()) {
+                !num.isNullOrBlank() && !weaknesses.isNullOrBlank()) {
             return ResponseEntity.status(400).body(
                     PokemonResponses(
                             code = 400,
-                            message = "You can only use one of the filters at a time."
+                            message =   "You can´t use these filters together. " +
+                                        "You can only use 'types' and 'weaknesses' at the same time, " +
+                                        "otherwise 1 filter at a time."
                     ).validated()
             )
         } else if (!name.isNullOrBlank()){
             pokemonRepository.findAllByNameContainingIgnoreCase(name!!)
         } else if (!num.isNullOrBlank()){
             pokemonRepository.findByNum(num!!)
+        }else if (!type.isNullOrBlank() && !weaknesses.isNullOrBlank()) {
+            pokemonRepository.findByWeaknessesIgnoreCaseAndTypeIgnoreCase(weaknesses!!, type!!)
         } else if (!type.isNullOrBlank()){
             pokemonRepository.findByTypeIgnoreCase(type!!)
         } else {

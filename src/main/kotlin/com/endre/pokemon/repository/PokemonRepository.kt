@@ -21,4 +21,6 @@ interface PokemonRepository : CrudRepository<Pokemon, Long> {
     fun findByTypeIgnoreCase(type: String): Iterable<Pokemon>
 
     fun findByWeaknessesIgnoreCase(weakness: String): Iterable<Pokemon>
+
+    fun findByWeaknessesIgnoreCaseAndTypeIgnoreCase(weaknesses: String, type: String): Iterable<Pokemon>
 }
