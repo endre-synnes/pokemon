@@ -383,7 +383,7 @@ class PokemonServiceImp : PokemonService {
             val type = jsonNode.get("type")
             when {
                 type.isNull -> pokemon.type = null
-                type.isArray -> pokemon.type = type.toSet().map { it.asText() }.toSet()
+                type.isArray -> pokemon.type = type.asIterable().map { it.asText() }.toMutableSet()
                 else -> return jsonFieldErrorMessage("type", "Array")
             }
         }
@@ -392,7 +392,7 @@ class PokemonServiceImp : PokemonService {
             val weaknesses = jsonNode.get("weaknesses")
             when {
                 weaknesses.isNull -> pokemon.weaknesses = null
-                weaknesses.isArray -> pokemon.weaknesses = weaknesses.toSet().map { it.asText() }.toSet()
+                weaknesses.isArray -> pokemon.weaknesses = weaknesses.asIterable().map { it.asText() }.toMutableSet()
                 else -> return jsonFieldErrorMessage("weaknesses", "Array")
             }
         }

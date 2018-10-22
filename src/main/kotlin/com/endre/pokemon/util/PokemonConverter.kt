@@ -45,20 +45,20 @@ class PokemonConverter {
             return pokemon.map { convertToDto(it) }
         }
 
-        fun convertToSimplePokemonDto(pokemonNums: Set<String>?) : Set<PokemonDto>?{
+        fun convertToSimplePokemonDto(pokemonNums: Set<String>?) : MutableSet<PokemonDto>?{
             return if (pokemonNums != null) {
                 if (pokemonNums.isNotEmpty()) {
-                    pokemonNums.asSequence().map { PokemonDto(num = it) }.toHashSet()
+                    pokemonNums.asSequence().map { PokemonDto(num = it) }.toMutableSet()
                 } else null
             }else {
                 null
             }
         }
 
-        fun convertFromSimplePokemonDto(simpleDtos: Set<PokemonDto>?): Set<String>? {
+        fun convertFromSimplePokemonDto(simpleDtos: Set<PokemonDto>?): MutableSet<String>? {
             return if (simpleDtos != null) {
                 if (simpleDtos.isNotEmpty()) {
-                    simpleDtos.asSequence().map { it.num!! }.toHashSet()
+                    simpleDtos.asSequence().map { it.num!! }.toMutableSet()
                 } else null
             } else {
                 null

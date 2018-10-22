@@ -33,17 +33,17 @@ class Pokemon(
 
         @get:ElementCollection
         @get:NotNull
-        var type: Set<String>? = setOf(),
+        var type: MutableSet<String>? = mutableSetOf(),
 
         @get:ElementCollection
         @get:NotNull
-        var weaknesses: Set<String>? = setOf(),
+        var weaknesses: MutableSet<String>? = mutableSetOf(),
 
         @get:ElementCollection
-        var prevEvolution: Set<String>? = setOf(),
+        var prevEvolution: MutableSet<String>? = mutableSetOf(),
 
         @get:ElementCollection
-        var nextEvolution: Set<String>? = setOf(),
+        var nextEvolution: MutableSet<String>? = mutableSetOf(),
 
         @get:Id @get:GeneratedValue
         var id: Long? = null

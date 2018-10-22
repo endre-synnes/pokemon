@@ -27,11 +27,11 @@ data class PokemonDto(
         @ApiModelProperty("Distance needed to walk to earn one candy")
         var egg: String? = null,
 
-        var type: Set<String>? = null,
+        var type: MutableSet<String>? = null,
 
-        var weaknesses: Set<String>? = null,
+        var weaknesses: MutableSet<String>? = null,
 
-        var prev_evolution: Set<PokemonDto>? = null,
+        var prev_evolution: MutableSet<PokemonDto>? = null,
 
-        var next_evolution: Set<PokemonDto>? = null
+        var next_evolution: MutableSet<PokemonDto>? = null
 )
