@@ -18,11 +18,11 @@ interface PokemonService{
 
     fun findBy(name: String?, num: String?, type: String?, weaknesses: String?, offset: Int, limit: Int): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>>
 
-    fun find(num: String?): ResponseEntity<WrappedResponse<PokemonDto>>
+    fun find(num: String?): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>>
 
-    fun update(num: String?, dto: PokemonDto): ResponseEntity<WrappedResponse<PokemonDto>>
+    fun update(num: String?, dto: PokemonDto): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>>
 
-    fun patch(num: String?, jsonBody: String): ResponseEntity<WrappedResponse<PokemonDto>>
+    fun patch(num: String?, jsonBody: String): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>>
 
-    fun delete(num: String?): ResponseEntity<WrappedResponse<PokemonDto>>
+    fun delete(num: String?): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>>
 }

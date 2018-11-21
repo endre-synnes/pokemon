@@ -38,7 +38,7 @@ class PokemonServiceImp : PokemonService {
                 pokemonDto.candy_count == null || pokemonDto.egg == null ||
                 pokemonDto.img == null || pokemonDto.type == null || pokemonDto.weaknesses == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    PokemonResponses(
+                    PokemonResponse(
                             code = HttpStatus.BAD_REQUEST.value(),
                             message = "One ore more fields was not defined"
                     ).validated()
@@ -178,7 +178,7 @@ class PokemonServiceImp : PokemonService {
         )
     }
 
-    override fun find(num: String?): ResponseEntity<WrappedResponse<PokemonDto>> {
+    override fun find(num: String?): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
         val id: Long
 
         try {
@@ -189,6 +189,8 @@ class PokemonServiceImp : PokemonService {
             } else {
                 "Invalid num parameter, This should be a numeric string"
             }
+
+
             return ResponseEntity.status(400).body(
                     PokemonResponse(
                             code = 400,
@@ -211,12 +213,12 @@ class PokemonServiceImp : PokemonService {
         return ResponseEntity.ok(
                 PokemonResponse(
                         code = 200,
-                        data = convertToDto(dto)
+                        data = PageDto(mutableListOf(convertToDto(dto)))
                 ).validated()
         )
     }
 
-    override fun update(num: String?, dto: PokemonDto): ResponseEntity<WrappedResponse<PokemonDto>> {
+    override fun update(num: String?, dto: PokemonDto): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
         val id: Long
 
         try {
@@ -269,15 +271,15 @@ class PokemonServiceImp : PokemonService {
 
         pokemonRepository.save(pokemon).id
 
-        return ResponseEntity.status(204).body(
+        return ResponseEntity.status(201).body(
                 PokemonResponse(
-                        code = 204,
-                        data = convertToDto(pokemon)
+                        code = 201,
+                        data = PageDto(mutableListOf(convertToDto(pokemon)))
                 ).validated()
         )
     }
 
-    override fun patch(num: String?, jsonBody: String): ResponseEntity<WrappedResponse<PokemonDto>> {
+    override fun patch(num: String?, jsonBody: String): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
         val id: Long
 
         try {
@@ -430,12 +432,12 @@ class PokemonServiceImp : PokemonService {
         return ResponseEntity.status(204).body(
                 PokemonResponse(
                         code = 204,
-                        data = convertToDto(pokemon)
+                        data = PageDto(mutableListOf(convertToDto(pokemon)))
                 ).validated()
         )
     }
 
-    private fun jsonFieldErrorMessage(field: String, type: String) : ResponseEntity<WrappedResponse<PokemonDto>> {
+    private fun jsonFieldErrorMessage(field: String, type: String) : ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
         return ResponseEntity.status(400).body(
                 PokemonResponse(
                         code = 400,
@@ -444,7 +446,7 @@ class PokemonServiceImp : PokemonService {
         )
     }
 
-    override fun delete(num: String?): ResponseEntity<WrappedResponse<PokemonDto>> {
+    override fun delete(num: String?): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
         val id: Long
 
         try {
