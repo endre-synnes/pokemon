@@ -1,13 +1,11 @@
 package com.endre.pokemon.api
 
 import com.endre.pokemon.PokemonApplication
-import com.endre.pokemon.PokemonApplicationTests
 import com.endre.pokemon.model.PokemonResponse
-import com.endre.pokemon.model.dto.PokemonDto
-import com.endre.pokemon.model.hal.PageDto
 import io.restassured.RestAssured
 import io.restassured.RestAssured.*
 import io.restassured.http.ContentType
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
@@ -28,14 +26,16 @@ abstract class TestSetup {
     fun clean(){
         baseURI = "http://localhost"
         RestAssured.port = port
-        basePath = "/newsrest/api/news"
+        basePath = "/api/pokemon"
         enableLoggingOfRequestAndResponseIfValidationFails()
 
         /*
            Here, we read each resource (GET), and then delete them
            one by one (DELETE)
          */
-        val list = given().accept(ContentType.JSON).get()
+        val response = given().accept(ContentType.JSON)
+                .param("limit", 200)
+                .get()
                 .then()
                 .statusCode(200)
                 .extract()
@@ -46,17 +46,19 @@ abstract class TestSetup {
             Code 204: "No Content". The server has successfully processed the request,
             but the return HTTP response will have no body.
          */
-//        list.stream().forEach {
-//            given().pathParam("id", it.newsId)
-//                    .delete("/{id}")
-//                    .then()
-//                    .statusCode(204)
-//        }
-//
-//        given().get()
-//                .then()
-//                .statusCode(200)
-//                .body("size()", equalTo(0))
+
+
+        response.data!!.list.forEach {
+            given()
+                    .delete("/${ it.id }")
+                    .then()
+                    .statusCode(204)
+        }
+
+        given().get()
+                .then()
+                .statusCode(200)
+                .body("data.list.size()", equalTo(0))
     }
 
 

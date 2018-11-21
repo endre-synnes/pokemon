@@ -271,9 +271,9 @@ class PokemonServiceImp : PokemonService {
 
         pokemonRepository.save(pokemon).id
 
-        return ResponseEntity.status(204).body(
+        return ResponseEntity.status(201).body(
                 PokemonResponse(
-                        code = 204,
+                        code = 201,
                         data = PageDto(mutableListOf(convertToDto(pokemon)))
                 ).validated()
         )
