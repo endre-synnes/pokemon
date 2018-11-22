@@ -47,7 +47,6 @@ abstract class TestSetup {
             but the return HTTP response will have no body.
          */
 
-
         response.data!!.list.forEach {
             given()
                     .delete("/${ it.id }")
