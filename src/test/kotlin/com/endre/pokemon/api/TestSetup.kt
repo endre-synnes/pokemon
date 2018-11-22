@@ -41,7 +41,6 @@ abstract class TestSetup {
                 .extract()
                 .`as`(PokemonResponse::class.java)
 
-
         /*
             Code 204: "No Content". The server has successfully processed the request,
             but the return HTTP response will have no body.
