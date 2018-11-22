@@ -1,22 +1,22 @@
 package com.endre.pokemon.model.hal
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+//import io.swagger.annotations.ApiModel
+//import io.swagger.annotations.ApiModelProperty
 
-@ApiModel(description = "Paginated list of resources with HAL links, like to 'next' and 'previous' pages")
+//@ApiModel(description = "Paginated list of resources with HAL links, like to 'next' and 'previous' pages")
 class PageDto<T>(
 
-        @get:ApiModelProperty("The list of resources in the current received page")
+        //@get:ApiModelProperty("The list of resources in the current received page")
         var list: MutableList<T> = mutableListOf(),
 
-        @get:ApiModelProperty("The index of the first element in this page")
+        //@get:ApiModelProperty("The index of the first element in this page")
         var rangeMin: Int = 0,
 
-        @get:ApiModelProperty("The index of the last element in this page")
+        //@get:ApiModelProperty("The index of the last element in this page")
         var rangeMax: Int = 0,
 
-        @get:ApiModelProperty("The total number of elements in all pages")
+        //@get:ApiModelProperty("The total number of elements in all pages")
         var totalSize: Int = 0,
 
         next: HalLink? = null,

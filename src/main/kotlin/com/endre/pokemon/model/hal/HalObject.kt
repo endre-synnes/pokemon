@@ -1,9 +1,9 @@
 package com.endre.pokemon.model.hal
 
-import io.swagger.annotations.ApiModelProperty
+//import io.swagger.annotations.ApiModelProperty
 
 open class HalObject(
 
-        @ApiModelProperty("HAL links")
+        //@ApiModelProperty("HAL links")
         var _links: MutableMap<String, HalLink> = mutableMapOf()
 )

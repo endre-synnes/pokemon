@@ -1,6 +1,6 @@
 package com.endre.pokemon.model.dto
 
-import io.swagger.annotations.ApiModelProperty
+//import io.swagger.annotations.ApiModelProperty
 
 /**
  * Created by Endre on 02.09.2018.

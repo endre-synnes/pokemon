@@ -1,6 +1,6 @@
 package com.endre.pokemon.model
 
-import io.swagger.annotations.ApiModelProperty
+//import io.swagger.annotations.ApiModelProperty
 
 /**
  * Wrapper DTO for REST responses.
@@ -9,16 +9,16 @@ import io.swagger.annotations.ApiModelProperty
  */
 open class WrappedResponse<T>(
 
-        @ApiModelProperty("The HTTP status code of the response")
+        //@ApiModelProperty("The HTTP status code of the response")
         var code: Int? = null,
 
-        @ApiModelProperty("The wrapped payload")
+        //@ApiModelProperty("The wrapped payload")
         var data: T? = null,
 
-        @ApiModelProperty("Error message in case where was an error")
+        //@ApiModelProperty("Error message in case where was an error")
         var message: String? = null,
 
-        @ApiModelProperty("String representing either 'success', user error ('error') or server failure ('fail')")
+        //@ApiModelProperty("String representing either 'success', user error ('error') or server failure ('fail')")
         var status: ResponseStatus? = null
 ) {
 

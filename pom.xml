@@ -69,6 +69,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!--
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -79,11 +80,13 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${version.springfox}</version>
         </dependency>
+        -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-spring-web</artifactId>
             <version>${version.springfox}</version>
         </dependency>
+
 
         <dependency>
             <groupId>com.google.code.gson</groupId>
