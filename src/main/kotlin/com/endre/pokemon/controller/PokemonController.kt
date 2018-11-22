@@ -21,7 +21,7 @@ import java.lang.Deprecated
 
 const val BASE_JSON = "application/json;charset=UTF-8"
 
-@Api(value = "/pokemon", description = "Handling of creating and retrieving pokemon's")
+//@Api(value = "/pokemon", description = "Handling of creating and retrieving pokemon's")
 @RequestMapping(
         path = ["/pokemon"],
         produces = [BASE_JSON]
@@ -37,29 +37,29 @@ class PokemonController {
     private lateinit var pokemonService: PokemonService
 
 
-    @ApiOperation("Get pokemon's")
+    //@ApiOperation("Get pokemon's")
     @GetMapping
-    fun getAll(@ApiParam("Name of the Pokemon")
+    fun getAll(//@ApiParam("Name of the Pokemon")
                @RequestParam("name", required = false)
                name : String?,
 
-               @ApiParam("Pokedex number of the Pokemon (has to be 3 characters long f.eks: 005)")
+               //@ApiParam("Pokedex number of the Pokemon (has to be 3 characters long f.eks: 005)")
                @RequestParam("num", required = false)
                num: String?,
 
-               @ApiParam("Pokemon type")
+               //@ApiParam("Pokemon type")
                @RequestParam("type", required = false)
                type: String?,
 
-               @ApiParam("Pokemon weaknesses")
+               //@ApiParam("Pokemon weaknesses")
                @RequestParam("weaknesses", required = false)
                weaknesses: String?,
 
-               @ApiParam("Offset in the list of pokemon's")
+               //@ApiParam("Offset in the list of pokemon's")
                @RequestParam("offset", defaultValue = "0")
                offset: Int,
 
-               @ApiParam("Limit of pokemons in a single retrieved page")
+               //@ApiParam("Limit of pokemons in a single retrieved page")
                @RequestParam("limit", defaultValue = "10")
                limit: Int
     ): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
@@ -67,56 +67,56 @@ class PokemonController {
     }
 
 
-    @ApiOperation("Create new Pokemon")
+    //@ApiOperation("Create new Pokemon")
     @PostMapping
     fun post(@RequestBody pokemonDto: PokemonDto): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
         return pokemonService.createPokemon(pokemonDto)
     }
 
-    @ApiOperation("Get single pokemon by the id")
+   // @ApiOperation("Get single pokemon by the id")
     @GetMapping(path = ["/{id}"])
-    fun get(@ApiParam("The id of the pokemon")
+    fun get(//@ApiParam("The id of the pokemon")
             @PathVariable("id")
             num: String?) : ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
         return pokemonService.find(num)
     }
 
-    @ApiOperation("Update the whole pokemon with new information")
+    //@ApiOperation("Update the whole pokemon with new information")
     @PutMapping(path = ["/{id}"])
-    fun update(@ApiParam("The id of the pokemon")
+    fun update(//@ApiParam("The id of the pokemon")
                @PathVariable("id")
                id: String?,
-               @ApiParam("Pokemon data")
+               //@ApiParam("Pokemon data")
                @RequestBody
                pokemonDto: PokemonDto): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
         return pokemonService.update(id, pokemonDto)
     }
 
-    @ApiOperation("Update part of the pokemon's data")
+    //@ApiOperation("Update part of the pokemon's data")
     @PatchMapping(path = ["/{id}"])
-    fun patch(@ApiParam("The id of the pokemon")
+    fun patch(//@ApiParam("The id of the pokemon")
             @PathVariable("id")
             num: String?,
-            @ApiParam("The partial patch")
+            //@ApiParam("The partial patch")
             @RequestBody
             jsonPatch: String) : ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
         return pokemonService.patch(num, jsonPatch)
     }
 
-    @ApiOperation("Delete a Pokemon by id")
+    //@ApiOperation("Delete a Pokemon by id")
     @DeleteMapping(path = ["/{id}"])
-    fun delete(@ApiParam("The id of the pokemon")
+    fun delete(//@ApiParam("The id of the pokemon")
                 @PathVariable("id")
                 num: String?) : ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
         return pokemonService.delete(num)
     }
 
-    @ApiOperation("Get single pokemon by the id")
-    @ApiResponses(ApiResponse(code = 301, message = "Deprecated URI, moved permanently."))
+    //@ApiOperation("Get single pokemon by the id")
+    //@ApiResponses(ApiResponse(code = 301, message = "Deprecated URI, moved permanently."))
     @GetMapping(path = ["/id/{id}"])
     @Deprecated
     fun deprecatedFindById(
-            @ApiParam("Id of a Pokemon")
+            //@ApiParam("Id of a Pokemon")
             @PathVariable("id")
             num: String?) : ResponseEntity<PokemonDto> {
         return ResponseEntity.status(301)

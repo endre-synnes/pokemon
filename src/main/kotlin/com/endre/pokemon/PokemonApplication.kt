@@ -9,16 +9,16 @@ import springfox.documentation.spring.web.plugins.Docket
 import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @SpringBootApplication
-@EnableSwagger2
+//@EnableSwagger2
 class PokemonApplication
 
-@Bean
-fun swaggerApi(): Docket {
-    return Docket(DocumentationType.SWAGGER_2)
-            .select()
-            .paths(PathSelectors.any())
-            .build()
-}
+//@Bean
+//fun swaggerApi(): Docket {
+//    return Docket(DocumentationType.SWAGGER_2)
+//            .select()
+//            .paths(PathSelectors.any())
+//            .build()
+//}
 
 fun main(args: Array<String>) {
     runApplication<PokemonApplication>(*args)
