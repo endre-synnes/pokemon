@@ -1,5 +1,6 @@
 package com.endre.pokemon.controller
 
+import com.codahale.metrics.MetricRegistry
 import com.endre.pokemon.model.dto.PokemonDto
 import com.endre.pokemon.model.WrappedResponse
 import com.endre.pokemon.model.hal.PageDto
@@ -36,6 +37,9 @@ class PokemonController {
     @Autowired
     private lateinit var pokemonService: PokemonService
 
+    @Autowired
+    private lateinit var registry: MetricRegistry
+
 
     //@ApiOperation("Get pokemon's")
     @GetMapping
@@ -70,6 +74,7 @@ class PokemonController {
     //@ApiOperation("Create new Pokemon")
     @PostMapping
     fun post(@RequestBody pokemonDto: PokemonDto): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
+        registry.meter("Creating Pokemon").mark()
         return pokemonService.createPokemon(pokemonDto)
     }
 
@@ -78,7 +83,8 @@ class PokemonController {
     fun get(//@ApiParam("The id of the pokemon")
             @PathVariable("id")
             num: String?) : ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
-        return pokemonService.find(num)
+       registry.meter("Getting pokemon with id: $num").mark()
+       return pokemonService.find(num)
     }
 
     //@ApiOperation("Update the whole pokemon with new information")
