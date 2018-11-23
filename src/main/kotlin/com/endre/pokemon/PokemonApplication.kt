@@ -1,7 +1,10 @@
 package com.endre.pokemon
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+
 //import org.springframework.context.annotation.Bean
 //import springfox.documentation.builders.PathSelectors
 //import springfox.documentation.spi.DocumentationType
@@ -9,6 +12,8 @@ import org.springframework.boot.runApplication
 //import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @SpringBootApplication
+@EntityScan(basePackages = ["com.endre.pokemon.model.entity"])
+@EnableJpaRepositories(basePackages = ["com.endre.pokemon.repository"])
 //@EnableSwagger2
 class PokemonApplication
 

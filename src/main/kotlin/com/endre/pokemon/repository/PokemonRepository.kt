@@ -1,9 +1,9 @@
 package com.endre.pokemon.repository
 
 import com.endre.pokemon.model.entity.Pokemon
-import org.springframework.data.jpa.repository.Query
+//import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
-import org.springframework.data.repository.query.Param
+//import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 /**
