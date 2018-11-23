@@ -53,7 +53,7 @@ class DefaultData {
         val next2 = PokemonDto(num = "1004")
 
         val dto2 = PokemonDto(
-                num = num,
+                num = nun2,
                 name = "Test 2",
                 img = "url2.com",
                 candy_count = 50,
