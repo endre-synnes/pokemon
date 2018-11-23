@@ -47,7 +47,23 @@ class DefaultData {
                 type = mutableSetOf("Grass"),
                 weaknesses = mutableSetOf("Fire"))
 
-        val pokemons = mutableListOf(dto)
+        val nun2 = "1004"
+
+        val prev2 = PokemonDto(num = "1003")
+        val next2 = PokemonDto(num = "1004")
+
+        val dto2 = PokemonDto(
+                num = num,
+                name = "Test 2",
+                img = "url2.com",
+                candy_count = 50,
+                egg = "2km",
+                prev_evolution = mutableSetOf(prev2),
+                next_evolution = mutableSetOf(next2),
+                type = mutableSetOf("Water"),
+                weaknesses = mutableSetOf("Grass"))
+
+        val pokemons = mutableListOf(dto, dto2)
 
         println("=== List from JSON ===")
         pokemons.forEach { println(it) }
