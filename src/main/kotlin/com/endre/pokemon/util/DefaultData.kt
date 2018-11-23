@@ -26,8 +26,28 @@ class DefaultData {
 
     @PostConstruct
     fun initializeDefault() {
-        val reader = JsonReader(FileReader("pokemons.json"))
-        val pokemons: List<PokemonDto> = Gson().fromJson(reader, object : TypeToken<List<PokemonDto>>() {}.type)
+        //val reader = JsonReader(FileReader("pokemons.json"))
+        //val pokemons: List<PokemonDto> = Gson().fromJson(reader, object : TypeToken<List<PokemonDto>>() {}.type)
+
+
+
+        val num = "1001"
+
+        val prev = PokemonDto(num = "1000")
+        val next = PokemonDto(num = "1002")
+
+        val dto = PokemonDto(
+                num = num,
+                name = "Test",
+                img = "url.com",
+                candy_count = 100,
+                egg = "5km",
+                prev_evolution = mutableSetOf(prev),
+                next_evolution = mutableSetOf(next),
+                type = mutableSetOf("Grass"),
+                weaknesses = mutableSetOf("Fire"))
+
+        val pokemons = mutableListOf(dto)
 
         println("=== List from JSON ===")
         pokemons.forEach { println(it) }
