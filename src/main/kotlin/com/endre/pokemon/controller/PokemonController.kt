@@ -67,7 +67,15 @@ class PokemonController {
                @RequestParam("limit", defaultValue = "10")
                limit: Int
     ): ResponseEntity<WrappedResponse<PageDto<PokemonDto>>> {
-        return pokemonService.findBy(name, num, type, weaknesses, offset, limit)
+        val counter = registry.counter("Get Pokemons")
+        counter.inc()
+        val timer = registry.timer("Time to retrive pokemons with limit amount: $limit")
+        val context = timer.time()
+        try {
+            return pokemonService.findBy(name, num, type, weaknesses, offset, limit)
+        } finally {
+            context.stop()
+        }
     }
 
 
